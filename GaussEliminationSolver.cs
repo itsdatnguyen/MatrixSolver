@@ -38,6 +38,7 @@ public class GaussEliminationSolver : ISolver
                     }
                 }
 
+                // apply transformations to all items in the current row
                 for (var colApplyTransform = 0; colApplyTransform < matrix.Size; colApplyTransform++)
                 {
                     matrix[colApplyTransform, row] = matrix[colApplyTransform, row] - multiplier * matrix[colApplyTransform, multiplierRow];
@@ -46,6 +47,7 @@ public class GaussEliminationSolver : ISolver
             }
         }
 
+        // run backwards substitution
         var backwardSolver = new BackwardSubstitutionSolver();
         return backwardSolver.Solve(matrix, parameters);
     }

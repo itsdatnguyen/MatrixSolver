@@ -8,7 +8,7 @@ namespace MatrixSolver;
 
 public class ForwardSubstitutionSolver : ISolver
 {
-    public double[] Solve(SquareMatrix matrix, double[] parameters)
+    public decimal[] Solve(SquareMatrix matrix, decimal[] parameters)
     {
         AssertLowerTriangularSystem(matrix);
         if (matrix.Size != parameters.Length)
@@ -16,7 +16,7 @@ public class ForwardSubstitutionSolver : ISolver
             throw new ArgumentException($"{nameof(parameters)} does not match the matrix size.");
         }
 
-        var solvedValues = new double[matrix.Size];
+        var solvedValues = new decimal[matrix.Size];
         for (var row = 0; row < matrix.Size; row++)
         {
             var rowSum = parameters[row];
@@ -36,7 +36,7 @@ public class ForwardSubstitutionSolver : ISolver
         {
             for (var row = 0; row < column; row++)
             {
-                if (matrix[column, row] != 0d)
+                if (matrix[column, row] != 0M)
                 {
                     throw new ArgumentException($"{nameof(ForwardSubstitutionSolver)} expects a lower triangular system!");
                 }

@@ -8,7 +8,7 @@ namespace MatrixSolver;
 
 public class BackwardSubstitutionSolver : ISolver
 {
-    public double[] Solve(SquareMatrix matrix, double[] parameters)
+    public decimal[] Solve(SquareMatrix matrix, decimal[] parameters)
     {
         AssertUpperTriangularSystem(matrix);
         if (matrix.Size != parameters.Length)
@@ -16,7 +16,7 @@ public class BackwardSubstitutionSolver : ISolver
             throw new ArgumentException($"{nameof(parameters)} does not match the matrix size.");
         }
 
-        var solvedValues = new double[matrix.Size];
+        var solvedValues = new decimal[matrix.Size];
         for (var row = matrix.Size - 1; row >= 0; row--)
         {
             var rowSum = parameters[row];
@@ -36,7 +36,7 @@ public class BackwardSubstitutionSolver : ISolver
         {
             for (var column = 0; column < row; column++)
             {
-                if (matrix[column, row] != 0d)
+                if (matrix[column, row] != 0M)
                 {
                     throw new ArgumentException($"{nameof(BackwardSubstitutionSolver)} expects a upper triangular system!");
                 }

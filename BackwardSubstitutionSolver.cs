@@ -8,19 +8,19 @@ namespace MatrixSolver;
 
 public class BackwardSubstitutionSolver : ISolver
 {
-    public decimal[] Solve(SquareMatrix matrix, decimal[] parameters)
+    public decimal[] Solve(IMatrix matrix, decimal[] parameters)
     {
         AssertUpperTriangularSystem(matrix);
-        if (matrix.Size != parameters.Length)
+        if (matrix.Rows != parameters.Length)
         {
             throw new ArgumentException($"{nameof(parameters)} does not match the matrix size.");
         }
 
-        var solvedValues = new decimal[matrix.Size];
-        for (var row = matrix.Size - 1; row >= 0; row--)
+        var solvedValues = new decimal[matrix.Columns];
+        for (var row = matrix.Rows - 1; row >= 0; row--)
         {
             var rowSum = parameters[row];
-            for (var col = matrix.Size - 1; col > row; col--)
+            for (var col = matrix.Columns - 1; col > row; col--)
             {
                 rowSum -= solvedValues[col] * matrix[col, row];
             }
@@ -30,9 +30,9 @@ public class BackwardSubstitutionSolver : ISolver
         return solvedValues;
     }
 
-    private void AssertUpperTriangularSystem(SquareMatrix matrix)
+    private void AssertUpperTriangularSystem(IMatrix matrix)
     {
-        for (var row = 1; row < matrix.Size; row++)
+        for (var row = 1; row < matrix.Rows; row++)
         {
             for (var column = 0; column < row; column++)
             {

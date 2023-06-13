@@ -8,14 +8,14 @@ namespace MatrixSolver;
 
 public class GaussEliminationSolver : ISolver
 {
-    public decimal[] Solve(SquareMatrix matrix, decimal[] parameters)
+    public decimal[] Solve(IMatrix matrix, decimal[] parameters)
     {
-        if (matrix.Size != parameters.Length)
+        if (matrix.Rows != parameters.Length)
         {
             throw new ArgumentException($"{nameof(parameters)} does not match the matrix size.");
         }
 
-        for (var row = 1; row < matrix.Size; row++)
+        for (var row = 1; row < matrix.Rows; row++)
         {
             for (var col = 0; col < row; col++) 
             { 
@@ -39,7 +39,7 @@ public class GaussEliminationSolver : ISolver
                 }
 
                 // apply transformations to all items in the current row
-                for (var colApplyTransform = 0; colApplyTransform < matrix.Size; colApplyTransform++)
+                for (var colApplyTransform = 0; colApplyTransform < matrix.Columns; colApplyTransform++)
                 {
                     matrix[colApplyTransform, row] = matrix[colApplyTransform, row] - multiplier * matrix[colApplyTransform, multiplierRow];
                 }

@@ -8,26 +8,26 @@ namespace MatrixSolver;
 
 public class HilbertGenerator
 {
-    public (SquareMatrix Matrix, decimal[] Parameters) GeneratorHb(int size)
+    public (SquareMatrix Matrix, double[] Parameters) GeneratorHb(int size)
     {
         if (size < 1)
         {
             throw new ArgumentException($"{nameof(size)} must be greater than 0");
         }
 
-        var matrix = new decimal[size][];
+        var matrix = new double[size][];
 
         for (var row = 0; row < size; row++)
         {
-            var currentRow = new decimal[size];
+            var currentRow = new double[size];
             for (var col = 0; col < size; col++)
             {
-                currentRow[col] = 1M / ((row + 1) + (col + 1) - 1);
+                currentRow[col] = 1D / ((row + 1) + (col + 1) - 1);
             }
             matrix[row] = currentRow;
         }
 
-        var parameters = new decimal[size];
+        var parameters = new double[size];
         for (var i = 0; i < size; i++)
         {
             parameters[i] = 1;

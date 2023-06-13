@@ -8,7 +8,7 @@ namespace MatrixSolver;
 
 public class GaussEliminationSolver : ISolver
 {
-    public decimal[] Solve(IMatrix matrix, decimal[] parameters)
+    public double[] Solve(IMatrix matrix, double[] parameters)
     {
         if (matrix.Rows != parameters.Length)
         {
@@ -26,7 +26,7 @@ public class GaussEliminationSolver : ISolver
 
                 // find first upper row with non-zero value
                 var multiplierRow = 0;
-                var multiplier = 0M;
+                var multiplier = 0D;
                 for (var rowFind = row - 1; rowFind >= 0; rowFind--)
                 {
                     var rowFindValue = matrix[col, rowFind];

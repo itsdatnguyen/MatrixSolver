@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,8 +10,37 @@ namespace MatrixSolver;
 
 public class HouseholderSolver : ISolver
 {
-    public decimal[] Solve(IMatrix matrix, decimal[] parameters)
+    public double[] Solve(IMatrix matrix, double[] parameters)
     {
-        return new decimal[4];
+        var parameterVector = new Vector(parameters);
+        for (var iteration = 0; iteration < matrix.Columns; iteration++)
+        {
+            var alpha = -matrix.SliceColumn(iteration, iteration).Normalize();
+            var vector = matrix.SliceColumn(iteration, iteration) - alpha * MatrixExtensions.CreateUnitVector(matrix.Rows, iteration);
+
+            for (var column = iteration; column < matrix.Columns; column++)
+            {
+                var currentColumn = matrix.SliceColumn(column);
+                var transform = ApplyHouseholderTransform(currentColumn, vector);
+                matrix.ReplaceColumn(transform, column);
+            }
+
+            parameterVector = ApplyHouseholderTransform(parameterVector, vector);
+        }
+
+        var finishedValues = new double[matrix.Columns][];
+        for (var row = 0; row < matrix.Columns; row++)
+        {
+            finishedValues[row] = matrix.Matrix[row];
+        }
+        var squareVector = new SquareMatrix(finishedValues);
+
+        var backwardSolver = new BackwardSubstitutionSolver();
+        return backwardSolver.Solve(squareVector, parameterVector.Take(matrix.Columns).ToArray());
+    }
+
+    private Vector ApplyHouseholderTransform(Vector currentColumn, Vector vector)
+    {
+        return currentColumn - 2 * ((vector * currentColumn) / (vector * vector)) * vector;
     }
 }

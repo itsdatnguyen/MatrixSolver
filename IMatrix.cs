@@ -8,9 +8,11 @@ namespace MatrixSolver;
 
 public interface IMatrix
 {
-    decimal this[int column, int row] { get; set; }
+    double[][] Matrix { get; }
+    double this[int column, int row] { get; set; }
     int Rows { get; }
     int Columns { get; }
-    decimal CalculateConditionNumberInfinite();
-    decimal[] Calculate(decimal[] parameters);
+    void ReplaceColumn(Vector vector, int column);
+    double CalculateConditionNumberInfinite();
+    double[] Calculate(double[] parameters);
 }

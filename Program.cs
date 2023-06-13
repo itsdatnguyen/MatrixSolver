@@ -23,9 +23,14 @@ internal class Program
             2.95, 1.74, -1.45, 1.32, 1.23, 4.45, 1.61, 3.21, 0.45, -2.75
         };
 
-        SolveWithGaussElimination();
-        SolveBackwardSystems();
-        SolveForwardSystems();
+        var matrix = new RectangularMatrix(altitudes);
+        var householderSolver = new HouseholderSolver();
+        var solved = householderSolver.Solve(matrix, measurements);
+
+        SolveHouseholderSystems();
+        //SolveWithGaussElimination();
+        //SolveForwardSystems();
+        //SolveBackwardSystems();
     }
 
     static void RunHilbertGenerator()
@@ -59,12 +64,37 @@ internal class Program
             PrintValues(trueX.Select((value, i) => (approximateX[i] - value)));
             Console.WriteLine();
             Console.WriteLine("Relative Error:");
-            PrintValues(backwardError.Select(e => decimal.Round(Math.Abs(e * 100), 0) + "%"));
+            PrintValues(backwardError.Select(e => double.Round(Math.Abs(e * 100), 0) + "%"));
             Console.WriteLine();
             Console.WriteLine("Residuals (r):");
             PrintValues(residuals);
             Console.WriteLine();
         }
+    }
+
+    static void SolveHouseholderSystems()
+    {
+        var solver = new HouseholderSolver();
+
+        RunOutput
+        (
+            solver,
+            new RectangularMatrix(
+                new double[][]
+                {
+                    new double[] { 1, 0, 0 },
+                    new double[] { 0, 1, 0 },
+                    new double[] { 0, 0, 1 },
+                    new double[] { -1, 1, 0 },
+                    new double[] { -1, 0, 1 },
+                    new double[] { 0, -1, 1 }
+                }
+            ),
+            new double[]
+            {
+                1237, 1941, 2417, 711, 1177, 475
+            }
+        );
     }
 
     static void SolveForwardSystems()
@@ -75,28 +105,28 @@ internal class Program
         (
             solver,
             new SquareMatrix(
-                new decimal[][]
+                new double[][]
                 {
-                    new decimal[] { 4, 0, 0 },
-                    new decimal[] { 2, -2, 0 },
-                    new decimal[] { 1, 3, 4 }
+                    new double[] { 4, 0, 0 },
+                    new double[] { 2, -2, 0 },
+                    new double[] { 1, 3, 4 }
                 }
             ),
-            new decimal[] { 1, -2, 19 }
+            new double[] { 1, -2, 19 }
         );
 
         RunOutput
         (
             solver,
             new SquareMatrix(
-                new decimal[][]
+                new double[][]
                 {
-                    new decimal[] { -1, 0, 0 },
-                    new decimal[] { 3, -2, 0 },
-                    new decimal[] { -2, 1, 4 }
+                    new double[] { -1, 0, 0 },
+                    new double[] { 3, -2, 0 },
+                    new double[] { -2, 1, 4 }
                 }
             ),
-            new decimal[] { 1, -7, 8 }
+            new double[] { 1, -7, 8 }
         );
     }
 
@@ -108,28 +138,28 @@ internal class Program
         (
             solver,
             new SquareMatrix(
-                new decimal[][]
+                new double[][]
                 {
-                    new decimal[] { 1, 3, 4 },
-                    new decimal[] { 0, -2, 2 },
-                    new decimal[] { 0, 0, 4 }
+                    new double[] { 1, 3, 4 },
+                    new double[] { 0, -2, 2 },
+                    new double[] { 0, 0, 4 }
                 }
             ),
-            new decimal[] { 11, -2, 4 }
+            new double[] { 11, -2, 4 }
         );
 
         RunOutput
         (
             solver,
             new SquareMatrix(
-                new decimal[][]
+                new double[][]
                 {
-                    new decimal[] { 1, 2, -4 },
-                    new decimal[] { 0, -2, -1 },
-                    new decimal[] { 0, 0, 3 }
+                    new double[] { 1, 2, -4 },
+                    new double[] { 0, -2, -1 },
+                    new double[] { 0, 0, 3 }
                 }
             ),
-            new decimal[] { 7, -7, 9 }
+            new double[] { 7, -7, 9 }
         );
     }
 
@@ -141,33 +171,33 @@ internal class Program
         (
             solver,
             new SquareMatrix(
-                new decimal[][]
+                new double[][]
                 {
-                    new decimal[] { 1, 2, 1, -1 },
-                    new decimal[] { 3, 2, 4, 4 },
-                    new decimal[] { 4, 4, 3, 4 },
-                    new decimal[] { 2, 0, 1, 5 },
+                    new double[] { 1, 2, 1, -1 },
+                    new double[] { 3, 2, 4, 4 },
+                    new double[] { 4, 4, 3, 4 },
+                    new double[] { 2, 0, 1, 5 },
                 }
             ),
-            new decimal[] { 5, 16, 22, 15 }
+            new double[] { 5, 16, 22, 15 }
         );
 
         RunOutput
         (
             solver,
             new SquareMatrix(
-                new decimal[][]
+                new double[][]
                 {
-                    new decimal[] { 1, 2, 2 },
-                    new decimal[] { 4, 4, 2 },
-                    new decimal[] { 4, 6, 4 }
+                    new double[] { 1, 2, 2 },
+                    new double[] { 4, 4, 2 },
+                    new double[] { 4, 6, 4 }
                 }
             ),
-            new decimal[] { 3, 6, 10 }
+            new double[] { 3, 6, 10 }
         );
     }
 
-    static private void RunOutput(ISolver solver, SquareMatrix matrix, decimal[] parameters)
+    static private void RunOutput(ISolver solver, IMatrix matrix, double[] parameters)
     {
         Console.WriteLine($"Running {solver.GetType().Name}");
         Console.WriteLine($"Parameters: {string.Join(",", parameters)}");
@@ -186,7 +216,7 @@ internal class Program
         }
     }
 
-    static void PrintValues(IEnumerable<decimal> values)
+    static void PrintValues(IEnumerable<double> values)
     {
         foreach (var value in values)
         {

@@ -2,5 +2,5 @@
 
 public interface ISolver
 {
-    decimal[] Solve(IMatrix matrix, decimal[] parameters);
+    double[] Solve(IMatrix matrix, double[] parameters);
 }

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace MatrixSolver;
 
+/// <summary>
+/// Stores a list of numbers.
+/// </summary>
 public class Vector : IEnumerable<double>
 {
     public double[] Values { get; set; }

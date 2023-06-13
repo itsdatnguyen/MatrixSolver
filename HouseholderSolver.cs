@@ -12,6 +12,8 @@ public class HouseholderSolver : ISolver
 {
     public double[] Solve(IMatrix matrix, double[] parameters)
     {
+        // Vector class is heavily used here to simplify logic
+        // so it looks very object oriented and simple
         var parameterVector = new Vector(parameters);
         for (var iteration = 0; iteration < matrix.Columns; iteration++)
         {

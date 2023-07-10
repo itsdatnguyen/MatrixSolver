@@ -4,6 +4,12 @@ internal class Program
 {
     /// Example output:
     /// <example>
+    /// Input Matrix
+    /// 1 -1 4
+    /// 1 4 -2
+    /// 1 4 2
+    /// 1 -1 0
+    /// 
     /// Iteration 0
     /// Q Matrix
     /// 0.5 0.5 0.5 0.5
@@ -66,6 +72,8 @@ internal class Program
             }
         );
 
+        Console.WriteLine("Input Matrix");
+        Console.WriteLine(matrix);
         var QMatrix = householderTransformer.Transform(matrix);
         Console.WriteLine("Final Orthogonal Q");
         Console.WriteLine(QMatrix);

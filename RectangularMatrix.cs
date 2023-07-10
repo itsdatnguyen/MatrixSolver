@@ -97,4 +97,74 @@ public class RectangularMatrix : IMatrix
             Matrix[row][column] = vector.Values[row];
         }
     }
+
+    public static RectangularMatrix operator -(RectangularMatrix lhs, double rhs)
+    {
+        for (var row = 0; row < lhs.Rows; row++)
+        {
+            for (var col = 0; col < lhs.Columns; col++)
+            {
+                lhs[col, row] -= rhs;
+            }
+        }
+        return lhs;
+    }
+
+    public static RectangularMatrix operator *(RectangularMatrix lhs, double rhs)
+    {
+        for (var row = 0; row < lhs.Rows; row++)
+        {
+            for (var col = 0; col < lhs.Columns; col++)
+            {
+                lhs[col, row] *= rhs;
+            }
+        }
+        return lhs;
+    }
+
+    public static RectangularMatrix operator *(RectangularMatrix lhs, RectangularMatrix rhs)
+    {
+        var data = new double[lhs.Rows][];
+        for (var row = 0; row < lhs.Rows; row++)
+        {
+            data[row] = new double[lhs.Columns];
+            for (var col = 0; col < lhs.Columns; col++)
+            {
+                var sum = 0D;
+                for (var index = 0; index < lhs.Columns; index++)
+                {
+                    sum += lhs[index, row] * rhs[col, index];
+                }
+                data[row][col] = sum;
+            }
+        }
+        return new RectangularMatrix(data);
+    }
+
+    public static RectangularMatrix operator *(double rhs, RectangularMatrix lhs)
+        => lhs * rhs;
+
+    public static RectangularMatrix operator /(RectangularMatrix lhs, RectangularMatrix rhs)
+    {
+        for (var row = 0; row < lhs.Rows; row++)
+        {
+            for (var col = 0; col < lhs.Columns; col++)
+            {
+                lhs[col, row] /= rhs[col, row];
+            }
+        }
+        return lhs;
+    }
+
+    public static RectangularMatrix operator -(RectangularMatrix lhs, RectangularMatrix rhs)
+    {
+        for (var row = 0; row < lhs.Rows; row++)
+        {
+            for (var col = 0; col < lhs.Columns; col++)
+            {
+                lhs[col, row] -= rhs[col, row];
+            }
+        }
+        return lhs;
+    }
 }

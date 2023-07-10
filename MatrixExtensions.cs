@@ -24,4 +24,59 @@ public static class MatrixExtensions
         values[index] = 1;
         return new Vector(values);
     }
+
+    public static RectangularMatrix CreateIdentityMatrix(int columns, int rows)
+    {
+        var matrix = new double[rows][];
+        for (var row = 0; row < rows; row++)
+        {
+            matrix[row] = new double[columns];
+        }
+
+        var min = Math.Min(rows, columns);
+        for (var i = 0; i < min; i++)
+        {
+            matrix[i][i] = 1D;
+        }
+
+        return new RectangularMatrix(matrix);
+    }
+
+    public static RectangularMatrix CreateFromColumns(List<Vector> columns)
+    {
+        var rows = columns.Count;
+        var data = new double[rows][];
+        for (var row = 0; row < rows; row++)
+        {
+            data[row] = new double[columns.Count];
+            for (var col = 0; col < columns.Count; col++)
+            {
+                data[row][col] = columns[col].Values[row];
+            }
+        }
+
+        return new RectangularMatrix(data);
+    }
+
+    public static IMatrix Transpose(this IMatrix matrix)
+    {
+        int w = matrix.Columns;
+        int h = matrix.Rows;
+
+        double[][] result = new double[w][];
+        for (int i = 0; i < matrix.Columns; i++)
+        {
+            result[i] = new double[h];
+        }
+
+        for (int i = 0; i < w; i++)
+        {
+            for (int j = 0; j < h; j++)
+            {
+                result[i][j] = matrix[i, j];
+            }
+        }
+
+        return new RectangularMatrix(result);
+    }
 }

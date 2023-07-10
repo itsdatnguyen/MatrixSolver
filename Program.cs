@@ -2,89 +2,98 @@
 
 internal class Program
 {
-    /// Note that many of the numbers in the output are impossibly small
-    /// ex: -3.3306690738754696E-16
     /// 
-    /// Note that I used the double data type here instead of a float data type.
     /// 
-    /// <example>
-    /// Input:
-    /// Parameters: 2.95,1.74,-1.45,1.32,1.23,4.45,1.61,3.21,0.45,-2.75
-    /// 
-    /// 1 0 0 0
-    /// 0 1 0 0
-    /// 0 0 1 0
-    /// 0 0 0 1
-    /// 1 -1 0 0
-    /// 1 0 -1 0
-    /// 1 0 0 -1
-    /// 0 1 -1 0
-    /// 0 1 0 -1
-    /// 0 0 1 -1
-    /// 
-    /// Output:
-    /// -2 0.5 0.5 0.5
-    /// 0 -1.9364916731037076 0.6454972243679027 0.6454972243679027
-    /// 0 0 -1.8257418583505536 0.9128709291752767
-    /// 0 0 0 -1.5811388300841895
-    /// 0 -3.3306690738754696E-16 -3.469446951953614E-18 -3.469446951953614E-18
-    /// 0 5.551115123125783E-17 -2.220446049250313E-16 -1.3877787807814457E-17
-    /// 0 5.551115123125783E-17 5.551115123125783E-17 -1.1102230246251565E-16
-    /// 0 3.3306690738754696E-16 -2.220446049250313E-16 -6.938893903907228E-18
-    /// 0 3.3306690738754696E-16 5.551115123125783E-17 -1.1102230246251565E-16
-    /// 0 0 2.220446049250313E-16 -1.1102230246251565E-16
-    /// 
-    /// Actual values(X): 2.95,1.74,-1.45,1.32
-    /// Solved values(X̂): 2.9600000000000004,1.7460000000000002,-1.46,1.3139999999999998
-    /// Absolute Backwards error(∆x) : 0.010000000000000231,0.006000000000000227,-0.010000000000000009,-0.006000000000000227
-    /// </example>
     static void Main(string[] args)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
-        var actualX = new double[]
+        var householderTransformer = new HouseholderTransformer();
+
+        var test = new RectangularMatrix
+            (
+                new double[][]
+                {
+                    new double[] { 2D, -2D, 18D },
+                    new double[] { 2D, 1D, 0D },
+                    new double[] { 1D, 2D, 0D },
+                    new double[] { 1D, 2D, 0D }
+                }
+            );
+
+        var test2 = test.Transpose();
+
         {
-            2.95, 1.74, -1.45, 1.32
-        };
-        var altitudes = new double[][]
+            var matrix = new RectangularMatrix
+            (
+                new double[][]
+                {
+                    new double[] { 2D, -2D, 18D },
+                    new double[] { 2D, 1D, 0D },
+                    new double[] { 1D, 2D, 0D }
+                }
+            );
+
+
+            Console.WriteLine("Matrix Before:");
+            Console.WriteLine(matrix);
+            var transformedMatrix = householderTransformer.Transform(matrix);
+            Console.WriteLine("Matrix After:");
+            Console.WriteLine(transformedMatrix);
+        }
         {
-            new double[] { 1, 0, 0, 0 },
-            new double[] { 0, 1, 0, 0 },
-            new double[] { 0, 0, 1, 0 },
-            new double[] { 0, 0, 0, 1 },
-            new double[] { 1, -1, 0, 0 },
-            new double[] { 1, 0, -1, 0 },
-            new double[] { 1, 0, 0, -1 },
-            new double[] { 0, 1, -1, 0 },
-            new double[] { 0, 1, 0, -1 },
-            new double[] { 0, 0, 1, -1 },
-        };
+            var matrix = new RectangularMatrix
+            (
+                new double[][]
+                {
+                    new double[] { 1D, -1D, 4D },
+                    new double[] { 1D, 4D, -2D },
+                    new double[] { 1D, 4D, 2D },
+                    new double[] { 1D, -1D, 0D },
+                }
+            );
 
-        var measurements = new double[]
+
+            Console.WriteLine("Matrix Before:");
+            Console.WriteLine(matrix);
+            var transformedMatrix = householderTransformer.Transform(matrix);
+            Console.WriteLine("Matrix After:");
+            Console.WriteLine(transformedMatrix);
+        }
         {
-            2.95, 1.74, -1.45, 1.32, 1.23, 4.45, 1.61, 3.21, 0.45, -2.75
-        };
-
-        var matrix = new RectangularMatrix(altitudes);
-        var solver = new HouseholderSolver();
-
-        Console.WriteLine("Input:");
-        Console.WriteLine($"Parameters: {string.Join(",", measurements)}");
-        Console.WriteLine();
-        Console.WriteLine(matrix.ToString());
-        Console.WriteLine();
-
-        var solvedValues = solver.Solve(matrix, measurements);
-        Console.Write("Output:");
-        Console.WriteLine();
-        Console.WriteLine(matrix.ToString());
-        Console.WriteLine();
-        Console.WriteLine($"Actual values (X): {string.Join(",", actualX)}");
-        Console.WriteLine($"Solved values (X̂): {string.Join(",", solvedValues)}");
-        var backwardsError = solvedValues.Select((value, index) => value - actualX[index]);
-        Console.WriteLine($"Absolute Backwards error (∆x): {string.Join(",", backwardsError)}");
-        Console.WriteLine();
-
-        //SolveHouseholderSystems();
+            var matrix = new RectangularMatrix
+            (
+                new double[][]
+                {
+                    new double[] { -1D, -1D, 1D },
+                    new double[] { 1D, 3D, 3D },
+                    new double[] { -1D, -1D, 5D }
+                }
+            );
+            Console.WriteLine("Matrix Before:");
+            Console.WriteLine(matrix);
+            var transformedMatrix = householderTransformer.Transform(matrix);
+            Console.WriteLine("Matrix After:");
+            Console.WriteLine(transformedMatrix);
+        }
+        {
+            var matrix = new RectangularMatrix
+            (
+                new double[][]
+                {
+                    new double[] { 1D, 0D, 0D },
+                    new double[] { 0D, 1D, 0D },
+                    new double[] { 0D, 0D, 1D },
+                    new double[] { -1D, 1D, 0D },
+                    new double[] { -1D, 0D, 1D },
+                    new double[] { 0D, -1D, 1D }
+                }
+            );
+            Console.WriteLine("Matrix Before:");
+            Console.WriteLine(matrix);
+            var transformedMatrix = householderTransformer.Transform(matrix);
+            Console.WriteLine("Matrix After:");
+            Console.WriteLine(transformedMatrix);
+        }
     }
 
     static void RunHilbertGenerator()

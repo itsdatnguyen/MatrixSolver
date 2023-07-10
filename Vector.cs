@@ -19,20 +19,35 @@ public class Vector : IEnumerable<double>
         Values = values.ToArray();
     }
 
+    public double DotProduct(Vector rhs)
+    {
+        var sum = 0D;
+        for (var i = 0; i < Values.Length; i++)
+        {
+            sum = sum + Values[i] * rhs.Values[i];
+        }
+        return sum;
+    }
+
     public static Vector operator *(Vector lhs, double rhs) => new Vector(lhs.Select(v => v * rhs));
     public static Vector operator *(double lhs, Vector rhs) => rhs * lhs;
 
     /// <summary>
-    /// This assumes a dot product
+    /// Creates a Square matrix
     /// </summary>
-    public static double operator *(Vector lhs, Vector rhs)
+    public static RectangularMatrix operator *(Vector lhs, Vector rhs)
     {
-        var sum = 0D;
-        for (var i = 0; i < lhs.Values.Length; i++)
+        var data = new double[lhs.Values.Length][];
+        for (var left = 0; left < lhs.Values.Length; left++)
         {
-            sum = sum + lhs.Values[i] * rhs.Values[i];
+            var row = new double[lhs.Values.Length];
+            for (var right = 0; right < lhs.Values.Length; right++)
+            {
+                row[right] = lhs.Values[left] * rhs.Values[right];
+            }
+            data[left] = row;
         }
-        return sum;
+        return new RectangularMatrix(data);
     }
 
     public static Vector operator -(Vector lhs, Vector rhs)
@@ -41,6 +56,26 @@ public class Vector : IEnumerable<double>
         for (var i = 0; i < lhs.Values.Length; i++)
         {
             outputValues[i] = lhs.Values[i] - rhs.Values[i];
+        }
+        return new Vector(outputValues);
+    }
+
+    public static Vector operator -(Vector lhs, double rhs)
+    {
+        var outputValues = new double[lhs.Values.Length];
+        for (var i = 0; i < lhs.Values.Length; i++)
+        {
+            outputValues[i] = lhs.Values[i] - rhs;
+        }
+        return new Vector(outputValues);
+    }
+
+    public static Vector operator /(Vector lhs, double rhs)
+    {
+        var outputValues = new double[lhs.Values.Length];
+        for (var i = 0; i < lhs.Values.Length; i++)
+        {
+            outputValues[i] = lhs.Values[i] / rhs;
         }
         return new Vector(outputValues);
     }

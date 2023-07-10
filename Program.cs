@@ -2,98 +2,73 @@
 
 internal class Program
 {
+    /// Example output:
+    /// <example>
+    /// Iteration 0
+    /// Q Matrix
+    /// 0.5 0.5 0.5 0.5
+    /// 0.5 0.5 -0.5 -0.5
+    /// 0.5 -0.5 0.5 -0.5
+    /// 0.5 -0.5 -0.5 0.5
     /// 
+    /// Transformed Matrix
+    /// 2 3 2
+    /// 0 0 0
+    /// 0 0 4
+    /// 0 -5 2
+    /// 
+    /// Iteration 1
+    /// Q Matrix
+    /// 1 0 0 0
+    /// 0 2.220446049250313E-16 0 -0.9999999999999998
+    /// 0 0 1 0
+    /// 0 -0.9999999999999998 0 2.220446049250313E-16
+    /// 
+    /// Transformed Matrix
+    /// 2 3 2
+    /// 0 4.999999999999999 -1.9999999999999996
+    /// 0 0 4
+    /// 0 -1.1102230246251565E-15 4.440892098500626E-16
+    /// 
+    /// Iteration 2
+    /// Q Matrix
+    /// 1 0 0 0
+    /// 0 1 0 0
+    /// 0 0 1 0
+    /// 0 0 0 -1
+    /// 
+    /// Transformed Matrix
+    /// 2 3 2
+    /// 0 4.999999999999999 -1.9999999999999996
+    /// 0 0 4
+    /// 0 1.1102230246251565E-15 -4.440892098500626E-16
+    /// 
+    /// Final Orthogonal Q
+    /// 0.5 -0.4999999999999998 0.5 0.4999999999999998
+    /// 0.5 0.5 -0.5 0.5
+    /// 0.5 0.4999999999999998 0.5 -0.4999999999999998
+    /// 0.5 -0.5 -0.5 -0.5
+    /// </example>
     /// 
     static void Main(string[] args)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         var householderTransformer = new HouseholderTransformer();
 
-        var test = new RectangularMatrix
-            (
-                new double[][]
-                {
-                    new double[] { 2D, -2D, 18D },
-                    new double[] { 2D, 1D, 0D },
-                    new double[] { 1D, 2D, 0D },
-                    new double[] { 1D, 2D, 0D }
-                }
-            );
+        var matrix = new RectangularMatrix
+        (
+            new double[][]
+            {
+                new double[] { 1D, -1D, 4D },
+                new double[] { 1D, 4D, -2D },
+                new double[] { 1D, 4D, 2D },
+                new double[] { 1D, -1D, 0D },
+            }
+        );
 
-        var test2 = test.Transpose();
-
-        {
-            var matrix = new RectangularMatrix
-            (
-                new double[][]
-                {
-                    new double[] { 2D, -2D, 18D },
-                    new double[] { 2D, 1D, 0D },
-                    new double[] { 1D, 2D, 0D }
-                }
-            );
-
-
-            Console.WriteLine("Matrix Before:");
-            Console.WriteLine(matrix);
-            var transformedMatrix = householderTransformer.Transform(matrix);
-            Console.WriteLine("Matrix After:");
-            Console.WriteLine(transformedMatrix);
-        }
-        {
-            var matrix = new RectangularMatrix
-            (
-                new double[][]
-                {
-                    new double[] { 1D, -1D, 4D },
-                    new double[] { 1D, 4D, -2D },
-                    new double[] { 1D, 4D, 2D },
-                    new double[] { 1D, -1D, 0D },
-                }
-            );
-
-
-            Console.WriteLine("Matrix Before:");
-            Console.WriteLine(matrix);
-            var transformedMatrix = householderTransformer.Transform(matrix);
-            Console.WriteLine("Matrix After:");
-            Console.WriteLine(transformedMatrix);
-        }
-        {
-            var matrix = new RectangularMatrix
-            (
-                new double[][]
-                {
-                    new double[] { -1D, -1D, 1D },
-                    new double[] { 1D, 3D, 3D },
-                    new double[] { -1D, -1D, 5D }
-                }
-            );
-            Console.WriteLine("Matrix Before:");
-            Console.WriteLine(matrix);
-            var transformedMatrix = householderTransformer.Transform(matrix);
-            Console.WriteLine("Matrix After:");
-            Console.WriteLine(transformedMatrix);
-        }
-        {
-            var matrix = new RectangularMatrix
-            (
-                new double[][]
-                {
-                    new double[] { 1D, 0D, 0D },
-                    new double[] { 0D, 1D, 0D },
-                    new double[] { 0D, 0D, 1D },
-                    new double[] { -1D, 1D, 0D },
-                    new double[] { -1D, 0D, 1D },
-                    new double[] { 0D, -1D, 1D }
-                }
-            );
-            Console.WriteLine("Matrix Before:");
-            Console.WriteLine(matrix);
-            var transformedMatrix = householderTransformer.Transform(matrix);
-            Console.WriteLine("Matrix After:");
-            Console.WriteLine(transformedMatrix);
-        }
+        var QMatrix = householderTransformer.Transform(matrix);
+        Console.WriteLine("Final Orthogonal Q");
+        Console.WriteLine(QMatrix);
     }
 
     static void RunHilbertGenerator()

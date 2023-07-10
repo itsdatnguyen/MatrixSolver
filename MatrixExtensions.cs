@@ -18,6 +18,16 @@ public static class MatrixExtensions
         return new Vector(values);
     }
 
+    public static Vector SliceColumn(this IMatrix matrix, int column, int start, int end)
+    {
+        var values = new double[matrix.Rows];
+        for (var row = start; row < end; row++)
+        {
+            values[row] = matrix[column, row];
+        }
+        return new Vector(values);
+    }
+
     public static Vector CreateUnitVector(int length, int index)
     {
         var values = Enumerable.Repeat(0D, length).ToArray();
@@ -25,16 +35,15 @@ public static class MatrixExtensions
         return new Vector(values);
     }
 
-    public static RectangularMatrix CreateIdentityMatrix(int columns, int rows)
+    public static RectangularMatrix CreateIdentityMatrix(int size)
     {
-        var matrix = new double[rows][];
-        for (var row = 0; row < rows; row++)
+        var matrix = new double[size][];
+        for (var row = 0; row < size; row++)
         {
-            matrix[row] = new double[columns];
+            matrix[row] = new double[size];
         }
 
-        var min = Math.Min(rows, columns);
-        for (var i = 0; i < min; i++)
+        for (var i = 0; i < size; i++)
         {
             matrix[i][i] = 1D;
         }

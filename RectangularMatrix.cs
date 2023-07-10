@@ -124,11 +124,11 @@ public class RectangularMatrix : IMatrix
 
     public static RectangularMatrix operator *(RectangularMatrix lhs, RectangularMatrix rhs)
     {
-        var data = new double[lhs.Rows][];
-        for (var row = 0; row < lhs.Rows; row++)
+        var data = new double[rhs.Rows][];
+        for (var row = 0; row < rhs.Rows; row++)
         {
-            data[row] = new double[lhs.Columns];
-            for (var col = 0; col < lhs.Columns; col++)
+            data[row] = new double[rhs.Columns];
+            for (var col = 0; col < rhs.Columns; col++)
             {
                 var sum = 0D;
                 for (var index = 0; index < lhs.Columns; index++)

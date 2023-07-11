@@ -1,5 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
+﻿
 namespace MatrixSolver;
 
 internal class Program

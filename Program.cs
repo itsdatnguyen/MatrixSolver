@@ -2,81 +2,22 @@
 
 internal class Program
 {
-    /// Example output:
-    /// <example>
-    /// Input Matrix
-    /// 1 -1 4
-    /// 1 4 -2
-    /// 1 4 2
-    /// 1 -1 0
-    /// 
-    /// Iteration 0
-    /// Q Matrix
-    /// 0.5 0.5 0.5 0.5
-    /// 0.5 0.5 -0.5 -0.5
-    /// 0.5 -0.5 0.5 -0.5
-    /// 0.5 -0.5 -0.5 0.5
-    /// 
-    /// Transformed Matrix
-    /// 2 3 2
-    /// 0 0 0
-    /// 0 0 4
-    /// 0 -5 2
-    /// 
-    /// Iteration 1
-    /// Q Matrix
-    /// 1 0 0 0
-    /// 0 2.220446049250313E-16 0 -0.9999999999999998
-    /// 0 0 1 0
-    /// 0 -0.9999999999999998 0 2.220446049250313E-16
-    /// 
-    /// Transformed Matrix
-    /// 2 3 2
-    /// 0 4.999999999999999 -1.9999999999999996
-    /// 0 0 4
-    /// 0 -1.1102230246251565E-15 4.440892098500626E-16
-    /// 
-    /// Iteration 2
-    /// Q Matrix
-    /// 1 0 0 0
-    /// 0 1 0 0
-    /// 0 0 1 0
-    /// 0 0 0 -1
-    /// 
-    /// Transformed Matrix
-    /// 2 3 2
-    /// 0 4.999999999999999 -1.9999999999999996
-    /// 0 0 4
-    /// 0 1.1102230246251565E-15 -4.440892098500626E-16
-    /// 
-    /// Final Orthogonal Q
-    /// 0.5 -0.4999999999999998 0.5 0.4999999999999998
-    /// 0.5 0.5 -0.5 0.5
-    /// 0.5 0.4999999999999998 0.5 -0.4999999999999998
-    /// 0.5 -0.5 -0.5 -0.5
-    /// </example>
-    /// 
     static void Main(string[] args)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
-        var householderTransformer = new HouseholderTransformer();
 
-        var matrix = new RectangularMatrix
-        (
+
+        var matrix = new SquareMatrix(
             new double[][]
             {
-                new double[] { 1D, -1D, 4D },
-                new double[] { 1D, 4D, -2D },
-                new double[] { 1D, 4D, 2D },
-                new double[] { 1D, -1D, 0D },
+                new double[] { -0.6D, 1 },
+                new double[] { 1, -0.6D },
             }
         );
 
-        Console.WriteLine("Input Matrix");
-        Console.WriteLine(matrix);
-        var QMatrix = householderTransformer.Transform(matrix);
-        Console.WriteLine("Final Orthogonal Q");
-        Console.WriteLine(QMatrix);
+        var eliminator = new GaussJordanEliminator();
+        var inverse = eliminator.Reduce(matrix);
+        Console.WriteLine(inverse);
     }
 
     static void RunHilbertGenerator()

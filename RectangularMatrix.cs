@@ -46,6 +46,16 @@ public class RectangularMatrix : IMatrix
         Matrix = matrix;
     }
 
+    public RectangularMatrix Clone()
+    {
+        var data = new double[Rows][];
+        for (var row = 0; row < Rows; row++)
+        {
+            data[row] = (double[])Matrix[row].Clone();
+        }
+        return new RectangularMatrix(data);
+    }
+
     public double[] Calculate(double[] parameters)
     {
         if (parameters.Length != Columns)
@@ -100,26 +110,46 @@ public class RectangularMatrix : IMatrix
 
     public static RectangularMatrix operator -(RectangularMatrix lhs, double rhs)
     {
-        for (var row = 0; row < lhs.Rows; row++)
+        var copy = lhs.Clone();
+        for (var row = 0; row < copy.Rows; row++)
         {
-            for (var col = 0; col < lhs.Columns; col++)
+            for (var col = 0; col < copy.Columns; col++)
             {
-                lhs[col, row] -= rhs;
+                copy[col, row] -= rhs;
             }
         }
-        return lhs;
+        return copy;
     }
 
     public static RectangularMatrix operator *(RectangularMatrix lhs, double rhs)
     {
-        for (var row = 0; row < lhs.Rows; row++)
+        var copy = lhs.Clone();
+        for (var row = 0; row < copy.Rows; row++)
         {
-            for (var col = 0; col < lhs.Columns; col++)
+            for (var col = 0; col < copy.Columns; col++)
             {
-                lhs[col, row] *= rhs;
+                copy[col, row] *= rhs;
             }
         }
-        return lhs;
+        return copy;
+    }
+
+    /// <summary>
+    /// Assumes linear combination. Will fail if params are not the right size.
+    /// </summary>
+    public static Vector operator *(RectangularMatrix lhs, Vector rhs)
+    {
+        var combinations = new double[lhs.Rows];
+        for (var row = 0; row < lhs.Rows; row++)
+        {
+            var total = 0D;
+            for (var col = 0; col < lhs.Columns; col++)
+            {
+                total += lhs[col, row] * rhs.Values[col];
+            }
+            combinations[row] = total;
+        }
+        return new Vector(combinations);
     }
 
     public static RectangularMatrix operator *(RectangularMatrix lhs, RectangularMatrix rhs)
@@ -146,25 +176,27 @@ public class RectangularMatrix : IMatrix
 
     public static RectangularMatrix operator /(RectangularMatrix lhs, RectangularMatrix rhs)
     {
-        for (var row = 0; row < lhs.Rows; row++)
+        var copy = lhs.Clone();
+        for (var row = 0; row < copy.Rows; row++)
         {
-            for (var col = 0; col < lhs.Columns; col++)
+            for (var col = 0; col < copy.Columns; col++)
             {
-                lhs[col, row] /= rhs[col, row];
+                copy[col, row] /= rhs[col, row];
             }
         }
-        return lhs;
+        return copy;
     }
 
     public static RectangularMatrix operator -(RectangularMatrix lhs, RectangularMatrix rhs)
     {
+        var copy = lhs.Clone();
         for (var row = 0; row < lhs.Rows; row++)
         {
             for (var col = 0; col < lhs.Columns; col++)
             {
-                lhs[col, row] -= rhs[col, row];
+                copy[col, row] -= rhs[col, row];
             }
         }
-        return lhs;
+        return copy;
     }
 }

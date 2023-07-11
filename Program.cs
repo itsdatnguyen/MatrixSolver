@@ -1,4 +1,6 @@
-﻿namespace MatrixSolver;
+﻿using static System.Net.Mime.MediaTypeNames;
+
+namespace MatrixSolver;
 
 internal class Program
 {
@@ -6,18 +8,59 @@ internal class Program
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
+        //var matrix = new RectangularMatrix(
+        //    new double[][]
+        //    {
+        //        new double[] { 3, 1 },
+        //        new double[] { 1, 3 },
+        //    }
+        //);
+        //var startingVector = new Vector(new double[] { 2, 1 });
 
-        var matrix = new SquareMatrix(
+        //var matrix = new RectangularMatrix(
+        //    new double[][]
+        //    {
+        //        new double[] { 2, 1, 1 },
+        //        new double[] { 1, 3, 1 },
+        //        new double[] { 1, 1, 4 },
+        //    }
+        //);
+        // var startingVector = new Vector(new double[] { 1, 1, 1 });
+
+
+        var matrix = new RectangularMatrix(
             new double[][]
             {
-                new double[] { -0.6D, 1 },
-                new double[] { 1, -0.6D },
+                new double[] { 2.9766, 0.3945, 0.4198, 1.1159 },
+                new double[] { 0.3945, 2.7328, -0.3097, 0.1129 },
+                new double[] { 0.4198, -0.3097, 2.5675, 0.6079 },
+                new double[] { 1.1159, 0.1129, 0.6079, 1.7231 },
             }
         );
 
-        var eliminator = new GaussJordanEliminator();
-        var inverse = eliminator.Reduce(matrix);
-        Console.WriteLine(inverse);
+        ExecuteQuotientsAndLog(
+            matrix,
+            new Vector[]
+            {
+                new Vector(new double[] { 1, 0.5, 1, 2 }),
+                new Vector(new double[] { 999, -999, 5, 5 }),
+                new Vector(new double[] { 5, 23.44, -42, -57 }),
+                new Vector(new double[] { -52300, 22300, -42324, -125 }),
+            }
+        );
+    }
+
+    public static void ExecuteQuotientsAndLog(RectangularMatrix matrix, Vector[] tests)
+    {
+        var rayleighQuotient = new RayleighQuotientIteration();
+
+        Console.WriteLine(string.Format("|{0,-5}|{1,-30}|{2,-30}|{3,-20}|", "#", "Starting Eigen Vector", "Eigen Value", "Number of iterations"));
+        for (var i = 0; i < tests.Length; i++)
+        {
+            var test = tests[i];
+            var (eigenvalue, iterations) = rayleighQuotient.Converge(matrix, test);
+            Console.WriteLine(string.Format("|{0,-5}|{1,-30}|{2,-30}|{3,-20}|", i, test, eigenvalue, iterations));
+        }
     }
 
     static void RunHilbertGenerator()

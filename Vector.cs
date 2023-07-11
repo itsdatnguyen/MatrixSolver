@@ -19,6 +19,11 @@ public class Vector : IEnumerable<double>
         Values = values.ToArray();
     }
 
+    public Vector Clone()
+    {
+        return new Vector((IEnumerable<double>)Values.Clone());
+    }
+
     public double DotProduct(Vector rhs)
     {
         var sum = 0D;
@@ -84,6 +89,7 @@ public class Vector : IEnumerable<double>
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
     public double Normalize() => Math.Sqrt(Values.Sum(v => Math.Pow(v, 2)));
+    public double NormalizeInfinity() => Values.Max();
 
     public override string ToString() => string.Join(",", Values);
 }

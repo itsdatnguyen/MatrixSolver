@@ -4,29 +4,20 @@ namespace MatrixSolver;
 
 internal class Program
 {
+    /// Sample output
+    /// <example>
+    /// |#    |Starting Eigen Vector         |Eigen Value                   |Number of iterations|
+    /// |0    |1,0.5,1,2                     |4.000021758462922             |6                   |
+    /// |1    |999,-999,5,5                  |2.0000194591485543            |7                   |
+    /// |2    |5,23.44,-42,-57               |2.999974952296109             |6                   |
+    /// |3    |-52300,22300,-42324,-125      |2.999974952296155             |5                   |
+    /// 
+    /// The eigen values are: 3.997550682007448,2.989222588421614,2.0132368304830472,0.9999898990878896
+    /// The number of iterations for the convergence is: 6
+    /// </example>
     static void Main(string[] args)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
-
-        //var matrix = new RectangularMatrix(
-        //    new double[][]
-        //    {
-        //        new double[] { 3, 1 },
-        //        new double[] { 1, 3 },
-        //    }
-        //);
-        //var startingVector = new Vector(new double[] { 2, 1 });
-
-        //var matrix = new RectangularMatrix(
-        //    new double[][]
-        //    {
-        //        new double[] { 2, 1, 1 },
-        //        new double[] { 1, 3, 1 },
-        //        new double[] { 1, 1, 4 },
-        //    }
-        //);
-        // var startingVector = new Vector(new double[] { 1, 1, 1 });
-
 
         var matrix = new RectangularMatrix(
             new double[][]
@@ -48,6 +39,29 @@ internal class Program
                 new Vector(new double[] { -52300, 22300, -42324, -125 }),
             }
         );
+
+        var qrIterator = new HouseholderQRIterator();
+        var (eigenValues, iteration) = qrIterator.SolveEigenvalues(matrix);
+        Console.WriteLine();
+        Console.WriteLine(@$"The eigen values are: {eigenValues}
+The number of iterations for the convergence is: {iteration}");
+
+
+        var matrix2 = new RectangularMatrix(
+            new double[][]
+            {
+                new double[] { -233, 2, -15, 515, 47 },
+                new double[] { 15, 1, -12524, 12, 4 },
+                new double[] { 23, 2, 23, 1, -155 },
+                new double[] { -47, -5, 51, -515, 1453 },
+                new double[] { -56, -578, 2, 515, 1 },
+            }
+        );
+
+        var (eigenValues2, iteration2) = qrIterator.SolveEigenvalues(matrix2);
+        Console.WriteLine("Extras:");
+        Console.WriteLine(@$"The eigen values are: {eigenValues2}
+The number of iterations for the convergence is: {iteration2}");
     }
 
     public static void ExecuteQuotientsAndLog(RectangularMatrix matrix, Vector[] tests)

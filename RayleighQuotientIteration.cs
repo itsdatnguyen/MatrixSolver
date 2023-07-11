@@ -14,8 +14,9 @@ public class RayleighQuotientIteration
         var quotients = new List<double>();
         var xVector = startingVector.Clone();
         var inverseEliminator = new GaussJordanEliminator();
-        
-        while (true)
+        var shouldContinue = true;
+
+        while (shouldContinue)
         {
             var shift = xVector.DotProduct(matrix * xVector) / xVector.DotProduct(xVector);
             var identityMatrix = MatrixExtensions.CreateIdentityMatrix(matrix.Rows);
@@ -24,7 +25,7 @@ public class RayleighQuotientIteration
 
             if (quotients.Count > 1 && Math.Abs(quotients[iteration - 2] - shift) < tolerance)
             {
-                break;
+                shouldContinue = false;
             }
             quotients.Add(shift);
 

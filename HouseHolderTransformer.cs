@@ -10,25 +10,18 @@ namespace MatrixSolver;
 
 public class HouseholderTransformer
 {
-    public IMatrix Transform(RectangularMatrix matrix)
+    public (RectangularMatrix q, RectangularMatrix r) Transform(RectangularMatrix sourceMatrix)
     {
+        var matrixR = sourceMatrix.Clone();
         var matricesQ = new List<RectangularMatrix>();
-        for (var iteration = 0; iteration < matrix.Columns; iteration++)
+        for (var iteration = 0; iteration < matrixR.Columns; iteration++)
         {
-            var alpha = matrix.SliceColumn(iteration, iteration).Normalize();
-            var vector = matrix.SliceColumn(iteration, iteration) - alpha * MatrixExtensions.CreateUnitVector(matrix.Rows, iteration);
+            var alpha = matrixR.SliceColumn(iteration, iteration).Normalize();
+            var vector = matrixR.SliceColumn(iteration, iteration) - alpha * MatrixExtensions.CreateUnitVector(matrixR.Rows, iteration);
             var transformationVector = vector / vector.Normalize();
-            var identity = MatrixExtensions.CreateIdentityMatrix(Math.Max(matrix.Rows, matrix.Columns));
+            var identity = MatrixExtensions.CreateIdentityMatrix(Math.Max(matrixR.Rows, matrixR.Columns));
             var q = identity - 2 * transformationVector * transformationVector;
-            matrix = q * matrix;
-
-            Console.WriteLine($"Iteration {iteration}");
-            Console.WriteLine("Q Matrix");
-            Console.WriteLine(q);
-            Console.WriteLine();
-            Console.WriteLine("Transformed Matrix");
-            Console.WriteLine(matrix);
-            Console.WriteLine();
+            matrixR = q * matrixR;
 
             matricesQ.Add(q);
         }
@@ -40,6 +33,6 @@ public class HouseholderTransformer
         {
             matrixQ *= enumerator.Current;
         }
-        return matrixQ;
+        return (matrixQ, matrixR);
     }
 }

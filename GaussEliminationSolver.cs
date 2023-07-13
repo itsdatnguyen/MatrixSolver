@@ -8,8 +8,9 @@ namespace MatrixSolver;
 
 public class GaussEliminationSolver : ISolver
 {
-    public double[] Solve(IMatrix matrix, double[] parameters)
+    public double[] Solve(IMatrix matrix, double[] origParameters)
     {
+        var parameters = (double[])origParameters.Clone();
         if (matrix.Rows != parameters.Length)
         {
             throw new ArgumentException($"{nameof(parameters)} does not match the matrix size.");

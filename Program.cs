@@ -3,77 +3,70 @@ namespace MatrixSolver;
 
 internal class Program
 {
-    /// Sample output
-    /// <example>
-    /// |#    |Starting Eigen Vector         |Eigen Value                   |Number of iterations|
-    /// |0    |1,0.5,1,2                     |4.000021758462922             |6                   |
-    /// |1    |999,-999,5,5                  |2.0000194591485543            |7                   |
-    /// |2    |5,23.44,-42,-57               |2.999974952296109             |6                   |
-    /// |3    |-52300,22300,-42324,-125      |2.999974952296155             |5                   |
+    /// Note that this program uses the Func<> data type to represent user customizable systems of equations.
+    /// This is done using the SystemOfEquations class.
     /// 
-    /// The eigen values are: 3.997550682007448,2.989222588421614,2.0132368304830472,0.9999898990878896
-    /// The number of iterations for the convergence is: 6
+    /// Example code
+    /// <example>
+    /// |k    |xk                            |f(xk)                         |f'(xk)              |hk                  |
+    /// |0    |0.5                           |-3.75                         |1                   |3.75                |
+    /// |1    |4.25                          |14.0625                       |8.5                 |-1.6544117647058822 |
+    /// |2    |2.5955882352941178            |2.7370782871972317            |5.1911764705882355  |-0.5272558740209965 |
+    /// |3    |2.0683323612731215            |0.27799875668964624           |4.136664722546243   |-0.06720359887386028|
+    /// |4    |2.001128762399261             |0.004516323701597713          |4.002257524798522   |-0.001128444052791198|
+    /// |5    |2.00000031834647              |1.2733859815483584E-06        |4.00000063669294    |-3.183464447148561E-07|
+    /// Calculated root is: 2.0000000000000253
+    /// 
+    /// ------------------------
+    /// 
+    /// |k    |[x1k x2k]                     |
+    /// |1    |-0.8333333333333333,1.4166666666666665|
+    /// |2    |-0.18939393939393911,1.0946969696969695|
+    /// |3    |-0.015079135302065144,1.0075395676510326|
+    /// |4    |-0.00011200127829965635,1.00005600063915|
+    /// |5    |-6.2714405382182856E-09,1.0000000031357204|
+    /// Calculated root is: -6.2714405382182856E-09,1.0000000031357204
     /// </example>
     static void Main(string[] args)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
+        var newtonMethod = new NewtonMethod();
 
-        var matrix = new RectangularMatrix(
-            new double[][]
-            {
-                new double[] { 2.9766, 0.3945, 0.4198, 1.1159 },
-                new double[] { 0.3945, 2.7328, -0.3097, 0.1129 },
-                new double[] { 0.4198, -0.3097, 2.5675, 0.6079 },
-                new double[] { 1.1159, 0.1129, 0.6079, 1.7231 },
-            }
+        var resultNewton = newtonMethod.FindRoot(
+            0.5,
+            x => Math.Pow(x - 2, 2) + 4 * x - 8, // (𝑥 − 2)^2 + 4𝑥 − 8 = 0
+            x => 2 * x // derivative of (𝑥 − 2)^2 + 4𝑥 − 8 = 0
         );
 
-        ExecuteQuotientsAndLog(
-            matrix,
-            new Vector[]
-            {
-                new Vector(new double[] { 1, 0.5, 1, 2 }),
-                new Vector(new double[] { 999, -999, 5, 5 }),
-                new Vector(new double[] { 5, 23.44, -42, -57 }),
-                new Vector(new double[] { -52300, 22300, -42324, -125 }),
-            }
-        );
-
-        var qrIterator = new HouseholderQRIterator();
-        var (eigenValues, iteration) = qrIterator.SolveEigenvalues(matrix);
+        Console.WriteLine($"Calculated root is: {resultNewton}");
         Console.WriteLine();
-        Console.WriteLine(@$"The eigen values are: {eigenValues}
-The number of iterations for the convergence is: {iteration}");
+        Console.WriteLine($"------------------------");
+        Console.WriteLine();
 
-
-        var matrix2 = new RectangularMatrix(
-            new double[][]
-            {
-                new double[] { -233, 2, -15, 515, 47 },
-                new double[] { 15, 1, -12524, 12, 4 },
-                new double[] { 23, 2, 23, 1, -155 },
-                new double[] { -47, -5, 51, -515, 1453 },
-                new double[] { -56, -578, 2, 515, 1 },
-            }
+        var resultSystem = newtonMethod.FindRootFromSystem(
+            new Vector(new double[] { 1, 2 }),
+            new SystemOfEquations
+            (
+                // 𝑥 + 2 * 𝑥 − 2 = 0 original system of equations 
+                // 𝑥^2 + 4𝑥^2 − 4 = 0
+                new Func<double[], double>[][]
+                {
+                    new Func<double[], double>[] { x => x[0], x => 2 * x[1], x => -2 },
+                    new Func<double[], double>[] { x => Math.Pow(x[0], 2), x => 4 * Math.Pow(x[1], 2), x => -4 }
+                }
+            ),
+            new SystemOfEquations
+            (
+                // 1 + 2 = 0 jacobian system
+                // 2x + 8x = 0
+                new Func<double[], double>[][]
+                {
+                    new Func<double[], double>[] { x => 1, x => 2 },
+                    new Func<double[], double>[] { x => 2 * x[0], x => 8*x[1] }
+                }
+            )
         );
-
-        var (eigenValues2, iteration2) = qrIterator.SolveEigenvalues(matrix2);
-        Console.WriteLine("Extras:");
-        Console.WriteLine(@$"The eigen values are: {eigenValues2}
-The number of iterations for the convergence is: {iteration2}");
-    }
-
-    public static void ExecuteQuotientsAndLog(RectangularMatrix matrix, Vector[] tests)
-    {
-        var rayleighQuotient = new RayleighQuotientIteration();
-
-        Console.WriteLine(string.Format("|{0,-5}|{1,-30}|{2,-30}|{3,-20}|", "#", "Starting Eigen Vector", "Eigen Value", "Number of iterations"));
-        for (var i = 0; i < tests.Length; i++)
-        {
-            var test = tests[i];
-            var (eigenvalue, iterations) = rayleighQuotient.Converge(matrix, test);
-            Console.WriteLine(string.Format("|{0,-5}|{1,-30}|{2,-30}|{3,-20}|", i, test, eigenvalue, iterations));
-        }
+        Console.WriteLine($"Calculated root is: {resultSystem}");
     }
 
     static void RunHilbertGenerator()

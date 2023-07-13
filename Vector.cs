@@ -55,12 +55,42 @@ public class Vector : IEnumerable<double>
         return new RectangularMatrix(data);
     }
 
+    public static Vector operator +(Vector lhs, Vector rhs)
+    {
+        var outputValues = new double[lhs.Values.Length];
+        for (var i = 0; i < lhs.Values.Length; i++)
+        {
+            outputValues[i] = lhs.Values[i] + rhs.Values[i];
+        }
+        return new Vector(outputValues);
+    }
+
     public static Vector operator -(Vector lhs, Vector rhs)
     {
         var outputValues = new double[lhs.Values.Length];
         for (var i = 0; i < lhs.Values.Length; i++)
         {
             outputValues[i] = lhs.Values[i] - rhs.Values[i];
+        }
+        return new Vector(outputValues);
+    }
+
+    public static Vector operator -(Vector lhs)
+    {
+        var outputValues = new double[lhs.Values.Length];
+        for (var i = 0; i < lhs.Values.Length; i++)
+        {
+            outputValues[i] = -lhs.Values[i];
+        }
+        return new Vector(outputValues);
+    }
+
+    public static Vector operator /(Vector lhs, Vector rhs)
+    {
+        var outputValues = new double[lhs.Values.Length];
+        for (var i = 0; i < lhs.Values.Length; i++)
+        {
+            outputValues[i] = lhs.Values[i] / rhs.Values[i];
         }
         return new Vector(outputValues);
     }

@@ -9,19 +9,17 @@ namespace MatrixSolver;
 
 public class NewtonMethod
 {
-    public double FindRoot(double previousX, 
+    public List<double> FindRoot(double previousX, 
         Func<double, double> function, 
         Func<double, double> derivativeFunction, 
         double tolerance = 0.00001)
     {
         var xList = new List<double> { previousX };
         var iteration = 0;
-        Console.WriteLine(string.Format("|{0,-5}|{1,-30}|{2,-30}|{3,-20}|{4,-20}|", "k", "xk", "f(xk)", "f'(xk)", "hk"));
         while (true)
         {
             var evalFunction = function(previousX);
             var evalDerivative = derivativeFunction(previousX);
-            Console.WriteLine(string.Format("|{0,-5}|{1,-30}|{2,-30}|{3,-20}|{4,-20}|", iteration, previousX, evalFunction, evalDerivative, -evalFunction / evalDerivative));
 
             previousX = previousX - evalFunction / evalDerivative;
             xList.Add(previousX);
@@ -31,7 +29,7 @@ public class NewtonMethod
                 break;
             }
         }
-        return previousX;
+        return xList;
     }
 
     public Vector FindRootFromSystem(Vector previousX,
@@ -42,7 +40,7 @@ public class NewtonMethod
         var gaussSolver = new GaussEliminationSolver();
         var xList = new List<Vector> { previousX };
         var iteration = 0;
-        Console.WriteLine(string.Format("|{0,-5}|{1,-30}|", "k", "[x1k x2k]"));
+        Console.WriteLine(string.Format("|{0,-5}|{1,-50}{2,-50}|", "k", "[x, y]", "Each Equation Value"));
         while (true)
         {
             var evalFunctionVector = system.Calculate(previousX);
@@ -52,7 +50,7 @@ public class NewtonMethod
             previousX = previousX + solvedSk;
             xList.Add(previousX);
             iteration++;
-            Console.WriteLine(string.Format("|{0,-5}|{1,-30}|", iteration, previousX));
+            Console.WriteLine(string.Format("|{0,-5}|{1,-50}{2,-50}|", iteration, previousX, evalFunctionVector));
             if ((xList[iteration] - xList[iteration - 1]).Select(Math.Abs).Any(x => x < tolerance))
             {
                 break;

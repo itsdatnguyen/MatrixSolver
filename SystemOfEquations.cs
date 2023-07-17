@@ -9,7 +9,7 @@ namespace MatrixSolver;
 /// <summary>
 /// Class used to represent a list of equations
 /// </summary>
-public class SystemOfEquations
+public class SystemOfEquations 
 {
     public Func<double[], double>[][] Equations { get; set; }
 

@@ -41,6 +41,29 @@ public class HouseholderSolver : ISolver
         return backwardSolver.Solve(squareVector, parameterVector.Take(matrix.Columns).ToArray());
     }
 
+    public IMatrix Transform(RectangularMatrix origMatrix)
+    {
+        var matrix = origMatrix.Clone();
+        for (var iteration = 0; iteration < matrix.Columns; iteration++)
+        {          
+            var alpha = -matrix.SliceColumn(iteration, iteration).Normalize();
+            var vector = matrix.SliceColumn(iteration, iteration) - alpha * MatrixExtensions.CreateUnitVector(matrix.Rows, iteration);
+
+            for (var column = iteration; column < matrix.Columns; column++)
+            {
+                var currentColumn = matrix.SliceColumn(column);
+                var transform = ApplyHouseholderTransform(currentColumn, vector);
+                matrix.ReplaceColumn(transform, column);
+            }
+
+            Console.WriteLine($"Iteration: {iteration}");
+            Console.WriteLine(matrix);
+            Console.WriteLine();
+        }
+
+        return matrix;
+    }
+
     private Vector ApplyHouseholderTransform(Vector currentColumn, Vector vector)
     {
         return currentColumn - 2 * (vector.DotProduct(currentColumn) / vector.DotProduct(vector)) * vector;

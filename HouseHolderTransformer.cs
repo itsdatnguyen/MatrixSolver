@@ -23,6 +23,14 @@ public class HouseholderTransformer
             var q = identity - 2 * transformationVector * transformationVector;
             matrixR = q * matrixR;
 
+            Console.WriteLine($"Iteration {iteration}");
+            Console.WriteLine("Q Matrix (orthogonal matrix)");
+            Console.WriteLine(q);
+            Console.WriteLine();
+            Console.WriteLine("R Matrix (upper triangular matrix)");
+            Console.WriteLine(matrixR);
+            Console.WriteLine();
+
             matricesQ.Add(q);
         }
 

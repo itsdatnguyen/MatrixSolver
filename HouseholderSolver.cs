@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace MatrixSolver;
 
+/// <summary>
+/// This class uses the Hu = (I - 2vvT/vTv)u formula to perform householder transforms
+/// </summary>
 public class HouseholderSolver : ISolver
 {
     public double[] Solve(IMatrix matrix, double[] parameters)

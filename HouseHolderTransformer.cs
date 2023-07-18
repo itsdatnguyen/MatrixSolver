@@ -8,6 +8,15 @@ using System.Threading.Tasks;
 
 namespace MatrixSolver;
 
+/// <summary>
+/// <para>
+/// This preferred implementation of householder uses the P = I - 2uuT formula
+/// where u = v/||v||2
+/// </para>
+/// <para>
+/// This formula captures the final orthogonal Q matrix and the final upper triangular matrix R.
+/// </para>
+/// </summary>
 public class HouseholderTransformer
 {
     public (RectangularMatrix q, RectangularMatrix r) Transform(RectangularMatrix sourceMatrix)

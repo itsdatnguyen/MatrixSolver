@@ -34,23 +34,23 @@ public class NewtonMethod
 
     public Vector FindRootFromSystem(Vector previousX,
         SystemOfEquations system,
-        SystemOfEquations jacobianSystem,
+        SystemOfEquations derivativeSystem,
         double tolerance = 0.0001)
     {
         var gaussSolver = new GaussEliminationSolver();
         var xList = new List<Vector> { previousX };
         var iteration = 0;
-        Console.WriteLine(string.Format("|{0,-5}|{1,-50}{2,-50}|", "k", "[x, y]", "Each Equation Value"));
+        Console.WriteLine(string.Format("|{0,-14}{1,-50}{2,-50}|", "𝑘(𝑥, 𝑦)", "𝑓(𝑥, 𝑦)", "∇𝑓(𝑥, 𝑦)"));
         while (true)
         {
             var evalFunctionVector = system.Calculate(previousX);
-            var evalJacobianMatrix = jacobianSystem * previousX;
-            var solvedSk = new Vector(gaussSolver.Solve(evalJacobianMatrix, (-evalFunctionVector).Values));
+            var evalDerivativeMatrix = derivativeSystem * previousX;
+            var solvedSk = new Vector(gaussSolver.Solve(evalDerivativeMatrix, (-evalFunctionVector).Values));
 
             previousX = previousX + solvedSk;
             xList.Add(previousX);
             iteration++;
-            Console.WriteLine(string.Format("|{0,-5}|{1,-50}{2,-50}|", iteration, previousX, evalFunctionVector));
+            Console.WriteLine(string.Format("|{0,-14}{1,-50}{2,-50}|", iteration, evalFunctionVector, derivativeSystem.Calculate(previousX)));
             if ((xList[iteration] - xList[iteration - 1]).Select(Math.Abs).Any(x => x < tolerance))
             {
                 break;
